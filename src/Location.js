@@ -36,7 +36,7 @@ class Location extends Component {
                 console.log(error);
                 this.setState({ error: error.message })
             },
-            { enableHighAccuracy: true, timeout: 20000, maximumAge: 1000, distanceFilter: 10 },
+            { enableHighAccuracy: true, timeout: 2000, maximumAge: 1000, distanceFilter: 10 },
         );
     }
 

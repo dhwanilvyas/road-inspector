@@ -26,9 +26,8 @@ var config = {
 firebase.initializeApp(config);
 
 let db = firebase.database().ref('data');
+
 let previousState = {
-  x:0,
-  y:0,
   z:0
 };
 
@@ -39,16 +38,38 @@ class App extends Component {
     super(props);
     this.state = {
         acceleration: {
-            x: 0,
-            y: 0,
             z: 0,
         },
+        
+        lat: null,
+        lng: null,
+        error: null,
         isStarted: false
     };
     this.start=this.start.bind(this);
     this.stop=this.stop.bind(this);
   }
+  componentDidMount() {
+    this.watchId = navigator.geolocation.watchPosition(
+      // navigator.geolocation.getCurrentPosition(
+      (position) => {
+          this.setState({
+              lat: position.coords.latitude,
+              lng: position.coords.longitude,
+              error: null,
+          });
+      },
+      (error) => {
+          console.log(error);
+          this.setState({ error: error.message })
+      },
+      { enableHighAccuracy: true, timeout: 2000, maximumAge: 1000, distanceFilter: 10 },
+    );
+  }
 
+    componentWillUnmount() {
+        navigator.geolocation.clearWatch(this.watchId);
+    }
   start() {
     accelerationObservable = new Accelerometer({
       updateInterval: 500,
@@ -65,13 +86,14 @@ class App extends Component {
 
   stop() {
     let acceleration = {
-      x: 0,
-      y: 0,
       z: 0,
     };
     accelerationObservable.stop();
-    this.setState({isStarted: false});
-    this.setState({acceleration});
+    this.setState({
+      isStarted: false,
+      acceleration: acceleration,
+    });
+    // this.setState();
     // accelerationObservable = null;
   }
 
@@ -88,7 +110,17 @@ class App extends Component {
 
   saveData(acceleration) {
     let time = new Date().getTime();
-    db.push(acceleration);
+    let data = {
+      z: acceleration.z,
+      lat: this.state.lat,
+      lng: this.state.lng,
+    }
+    db.push(data).then(function(){
+      console.log(data);
+    }).catch(function(err){
+      console.log(err);
+    });
+   // console.log(data);
     this.setPreviousState(acceleration);
   }
 
@@ -111,21 +143,19 @@ class App extends Component {
             <Header headerText={'Road Inspector'}/>
             <Card>
                 <Section>
-                    <Text style={instructions}>
-                        {'X : '+acceleration.x.toFixed(7)}
-                    </Text>
+                    <Text style={instructions}>Latitude: {this.state.lat}</Text>
+                </Section>
+                <Section>
+                     <Text style={instructions}>Longitude: {this.state.lng}</Text>
                 </Section>
                 <Section>
                     <Text style={instructions}>
-                        {'Y : '+acceleration.y.toFixed(7)}
+                        {'Z : '+acceleration.z.toFixed(1)}
                     </Text>
                 </Section>
                 <Section>
-                    <Text style={instructions}>
-                        {'Z : '+acceleration.z.toFixed(7)}
-                    </Text>
+                    {this.state.error ? <Text style={instructions} >Error: {this.state.error}</Text> : null}
                 </Section>
-                
                 <Section>
                   {btn1}
                 </Section> 
