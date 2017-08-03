@@ -19,7 +19,7 @@ class Location extends Component {
         };
     }
     componentDidMount() {
-        this.watchId = navigator.geolocation.watchPosition(
+        this.watchId = navigator.geolocation.getCurrentPosition(
        // navigator.geolocation.getCurrentPosition(
             (position) => {
                 console.log('in position');
