@@ -6,6 +6,8 @@ import {
   AsyncStorage
 } from 'react-native';
 import { Actions } from 'react-native-router-flux';
+import Card from './components/Card';
+import CardSection from './components/CardSection';
 import Section from './components/Section';
 import Button from './components/Button';
 
@@ -32,13 +34,18 @@ class Trip extends Component {
 
   render() {
     return (
-      <View style={styles.cardContainer}>
-        <Text style={styles.instructions}>Potholes: {this.state.trip.potholes}</Text>
-        <Text style={styles.instructions}>Bumps: {this.state.trip.bumps}</Text>
-        <Section>
-          <Button onPress={Actions.home}>Back home</Button>
-        </Section>
-      </View>
+      <Card>
+        <CardSection>
+          <View style={styles.cardContainer}>
+            <Text style={styles.instructions}>Potholes: {this.state.trip.potholes}</Text>
+            <Text style={styles.instructions}>Bumps: {this.state.trip.bumps}</Text>
+            <Section>
+              <Button onPress={Actions.home}>Back home</Button>
+            </Section>
+          </View>
+        </CardSection>
+      </Card>
+      
     );
   }
 }
@@ -48,11 +55,12 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#FFFFFF',
     flexDirection: 'column',
-    alignItems: 'stretch',
+   // alignItems: 'stretch',
     justifyContent: 'space-between',
   },
   instructions: {
     fontSize: 50,
+    paddingLeft: 20,
   }
 });
 

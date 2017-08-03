@@ -16,6 +16,7 @@ import Section from './components/Section';
 import Card from './components/Card';
 import CardSection from './components/CardSection';
 
+const loader = require('./images/loader.gif');
 const { Accelerometer } = RNSensors;
 const accelerationObservable = null;
 
@@ -187,7 +188,12 @@ class Recording extends Component {
             </Text>
           </Section> */}
           <View style={recording}>
-            <ActivityIndicator animating={true} size='large' />
+            <ActivityIndicator animating={true} size='large' color="#0000ff" />
+            {/* <ActivityIndicator animating={true} size='large' color="#aa00aa" />
+            <ActivityIndicator animating={true} size='large' color="#aa3300" />
+            <ActivityIndicator animating={true} size='large' color="#00aa00" /> 
+            <Image source={loader} style={{width: 100, height: 100 }} />
+            <Load ref={loader}></Load>*/}
           </View>
           <Section>
             {this.state.error ? <Text style={instructions} >Error: {this.state.error}</Text> : null}
